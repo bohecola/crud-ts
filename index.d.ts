@@ -4,6 +4,12 @@ declare type obj = {
   [key: string]: any;
 };
 
+declare type DeepPartial<T> = T extends Function
+  ? T
+  : T extends Object
+  ? { [P in keyof T]?: DeepPartial<T[P]> }
+  : T;
+
 declare namespace Vue {
   interface Ref<T = any> {
     value: T;
@@ -11,6 +17,8 @@ declare namespace Vue {
 
   type Emit = (name: string, data: any) => void;
 }
+
+declare type List<T> = Array<DeepPartial<T> | (() => DeepPartial<T>)>;
 
 // element-plus
 declare namespace ElementPlus {
@@ -220,9 +228,32 @@ declare namespace ClCrud {
 
   interface Ref {
     "cl-table": ClTable.Ref;
+    "cl-upsert": ClUpsert.Ref;
 		name: string;
 		routePath: string;
+    permission: Permission;
+    dict: Dict;
+    service: Service["api"];
+    loading: boolean;
+    params: obj;
+    selection: any[];
+    set(key: "dict" | "style" | "service" | "permission", value: any): void;
+    done(): void;
+    getParams(): obj;
+    getPermission(key?: string): boolean;
+    rowInfo(data: obj): void;
+    rowAdd(): void;
+    rowEdit(data: obj): void;
+    rowAppend(data?: obj): void;
+    rowClose(): void;
+    rowDelete(...selection: any[]): void;
+    proxy(name: string, data?: any): any;
+    paramsReplace(params: obj): obj;
+    refresh: Service["api"]["page"];
+    [key: string]: any;
   }
+
+  interface Provide extends Ref {}
 }
 
 declare namespace ClTable {
@@ -443,6 +474,94 @@ declare namespace ClForm {
     };
     [key: string]: any;
   }
+
+  type Items = List<Item>;
+
+  interface Options extends Config {
+    items: Items;
+  }
+
+  interface Ref {
+    Form: any;
+    form: obj;
+    config: {
+      items: Item[];
+      [key: string]: any;
+    };
+    open(options: DeepPartial<Options>, plugins?: Plugin[]): void;
+    close(action?: CloseAction): void;
+    done(): void;
+    clear(): void;
+    reset(): void;
+    showLoading(): void;
+    hideLoading(): void;
+    setData(prop: string, value: any): void;
+    bindForm(data: obj): void;
+    setOptions(prop: string, list: Array<{ label: string; value?: any }>): void;
+    setProps(prop: string, value: any): void;
+    getForm(prop?: string): any;
+    setForm(prop: string, value: any): void;
+    showItem(props: string[] | string): void;
+    hideItem(props: string[] | string): void;
+    toggleItem(prop: string, flag?: boolean): void;
+    resetFields(): void;
+    validateField(
+      props?: string[] | string,
+      callback?: (isValid: boolean, invalidFields: any[]) => void
+    ): Promise<void>;
+    validate(callback: (isValid: boolean, invalidFields: any[]) => void): Promise<void>;
+    changeTab(value: any, valid?: boolean): Promise<any>;
+    setTitle(value: string): void;
+    submit(cb?: (data: obj) => void): void;
+    [key: string]: any;
+  }
+}
+
+declare namespace ClUpsert {
+  interface Config {
+    items: ClForm.Item[];
+    props: ClForm.Config["props"];
+    sync: boolean;
+    op: ClForm.Config["op"];
+    dialog: ClForm.Config["dialog"];
+    onOpen?(data: obj): void;
+    onOpened?(data: obj): void;
+    onClose?(action: ClForm.CloseAction, done: fn): void;
+    onClosed?(): void;
+    onInfo?(
+      data: obj,
+      event: { close: fn; done(data: obj): void; next: ClCrud.Service["api"]["info"] }
+    ): void;
+    onSubmit?(
+      data: obj,
+      event: { close: fn, done: fn; next: ClCrud.Service["api"]["update"] }
+    ): void;
+    plugins?: ClForm.Plugin[];
+  }
+
+  interface Ref extends ClForm.Ref {
+    mode: "add" | "update" | "info";
+  }
+
+  interface Options extends Config {
+    items: List<ClForm.Item>
+  }
+}
+
+declare namespace ClAdvSearch {
+  interface Config {
+    items?: ClForm.Item[];
+    title?: string;
+    size?: string | number;
+    op?: Array<"clear" | "reset" | "close" | "save">;
+    onSearch?(data: obj, options: { next: ClCrud.Service["api"]["page"]; close(): void }): void;
+  }
+
+  interface Options extends Config {
+    items: ClForm.Items;
+  }
+
+  interface Ref extends ClForm.Ref {}
 }
 
 declare namespace ClContextMenu {
@@ -480,4 +599,35 @@ declare namespace ClContextMenu {
     open(event: Event, options: Options): Ref;
     close(): void;
   }
+}
+
+declare namespace ClDialog {
+  interface Provide {
+    visible: Vue.Ref<boolean>;
+    fullscreen: Vue.Ref<boolean>;
+  }
+}
+
+declare interface GlobalOptions {
+  dict: ClCrud.Dict;
+  permission: ClCrud.Permission;
+  style: {
+    size: ElementPlus.Size;
+  };
+  events: {
+    [key: string]: (...args: any[]) => any;
+  };
+  render: {
+    autoHeight: boolean;
+    functionSlots: {
+      exclude: string[];
+    };
+  };
+  crud: any;
+}
+
+declare type Options = DeepPartial<GlobalOptions>;
+
+declare interface CrudOptions {
+  options: Options;
 }
