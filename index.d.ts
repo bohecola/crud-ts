@@ -281,7 +281,7 @@ declare namespace ClTable {
     hidden: boolean | Vue.Ref<boolean>;
     component: Render.Component;
     dict: Dict | Vue.Ref<Dict>;
-    button: OpButton | OpButtonHandler;
+    buttons: OpButton | OpButtonHandler;
     align: "left" | "center" | "right";
     label: string | Vue.Ref<string>;
     className: string;
