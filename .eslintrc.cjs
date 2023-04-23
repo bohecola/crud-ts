@@ -11,6 +11,7 @@ module.exports = {
   rules: {
     quotes: ["error", "double"],
     semi: ["error", "always"],
+    "no-inner-declarations": "off",
     "vue/no-unused-vars": "off",
     "vue/multi-word-component-names": "off"
   },
