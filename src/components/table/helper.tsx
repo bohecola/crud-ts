@@ -49,7 +49,7 @@ export function useSort({ config, emit, Table }: { config: Config; emit: Emit; T
 
   // 排序监听
   function onSortChange({ prop, order }: { prop: string | undefined; order: string }) {
-    if (config.sortRefresh)  {
+    if (config.sortRefresh) {
       if (order === "descending") {
         order = "desc";
       }

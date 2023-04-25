@@ -173,7 +173,7 @@ export function useHelper({ mitt, config, crud }: Options) {
           type: "warning",
           title: dict.label.tips,
           message: dict.label.deleteConfirm,
-          confirmButtonText: dict.label.deleteConfirm,
+          confirmButtonText: dict.label.confirm,
           cancelButtonText: dict.label.close,
           showCancelButton: true,
           async beforeClose(action, instance, done) {
