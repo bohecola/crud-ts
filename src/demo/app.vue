@@ -4,7 +4,7 @@
       <cl-table ref="Table"></cl-table>
     </cl-row>
 
-    <upsert />
+    <!-- <upsert /> -->
   </cl-crud>
 </template>
 
@@ -91,13 +91,13 @@ const Table = useTable({
         }
       ]
     },
-    {
-      label: "测试",
-      width: 250,
-      component: {
-        vm: ColumnT1
-      }
-    },
+    // {
+    //   label: "测试",
+    //   width: 250,
+    //   component: {
+    //     vm: ColumnT1
+    //   }
+    // },
     {
       label: "标签",
       prop: "tags",
@@ -185,3 +185,38 @@ function openForm() {
   );
 }
 </script>
+
+<style lang="scss">
+* {
+	padding: 0;
+	margin: 0;
+}
+
+#app {
+	height: 100vh;
+
+	.demo {
+		height: 100%;
+
+		.wrap {
+			height: 100%;
+			padding: 10px;
+			box-sizing: border-box;
+			overflow: hidden;
+		}
+
+		.cm {
+			li {
+				height: 30px;
+				width: 200px;
+				border-bottom: 1px solid #eee;
+			}
+		}
+	}
+}
+
+.dialog {
+	height: 100%;
+	overflow: auto;
+}
+</style>
